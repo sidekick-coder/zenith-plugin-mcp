@@ -2,7 +2,7 @@ import { createMcpHandler, McpServer } from "@modelcontextprotocol/server";
 import ToolService from "./ToolService.ts";
 import { toStandardJsonSchema } from "@valibot/to-json-schema";
 import { auth, logger, permissionRepository, AclEntity, http } from "@sidekick-coder/zenith-kit/server";
-import { BaseException, LoggerService, PermissionEntity, tryCatch } from "@sidekick-coder/zenith-kit/shared";
+import { BaseException, LoggerService, PermissionEntity } from "@sidekick-coder/zenith-kit/shared";
 import type { ToolDefinition } from "#server/utils/defineTool.ts";
 import { toNodeHandler } from "@modelcontextprotocol/node";
 
@@ -11,11 +11,26 @@ export default class MCPService {
     public tools: ToolService
     public server: McpServer
     public logger: LoggerService
+    public debug: boolean = false
 
     constructor() {
         this.tools = new ToolService()
         this.server = new McpServer({ name: "zenith", version: "0.0.1" })
-        this.logger = logger.child({ label: 'mcp' })
+        this.logger = logger
+
+        this.tools.setLogger(this.logger)
+    }
+
+    public setLogger(logger: LoggerService) {
+        this.logger = logger
+        this.tools.setLogger(logger)
+        return this
+    }
+
+    public setDebug(debug: boolean) {
+        this.debug = debug
+        this.tools.setDebug(debug)
+        return this
     }
 
     public createToolHandler(tool: ToolDefinition) {
@@ -61,7 +76,12 @@ export default class MCPService {
 
             this.server.registerTool(tool.name, options, handler)
 
-            this.logger.info(`register tool ${tool.name} successfully`)
+            if (this.debug) {
+                this.logger.debug(`tool registered "${tool.name}"`, {
+                    name: tool.name,
+                    description: tool.description,
+                })
+            }
         }
     }
 

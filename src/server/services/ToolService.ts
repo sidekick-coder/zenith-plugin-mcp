@@ -1,5 +1,6 @@
 import type { ToolDefinition } from "#server/utils/defineTool.ts";
-import { importAll, importGlob } from "@sidekick-coder/zenith-kit/server";
+import { importGlob, logger } from "@sidekick-coder/zenith-kit/server";
+import type { LoggerService } from "@sidekick-coder/zenith-kit/shared";
 import set from "lodash-es/set.js";
 import path from "path";
 
@@ -9,9 +10,32 @@ interface AddDirectoryOptions {
 
 export default class ToolService {
     public tools: Map<string, ToolDefinition> = new Map()
+    public logger: LoggerService
+    public debug: boolean = false
+
+    constructor() {
+        this.logger = logger
+    }
+
+    public setLogger(logger: LoggerService) {
+        this.logger = logger
+        return this
+    }
+
+    public setDebug(debug: boolean) {
+        this.debug = debug
+        return this
+    }
 
     public add(tool: ToolDefinition) {
         this.tools.set(tool.name!, tool)
+
+        if (this.debug) {
+            this.logger.debug(`tool added "${tool.name}"`, {
+                name: tool.name,
+                description: tool.description,
+            })
+        }
     }
 
     public async addDirectory(directory: string, options: AddDirectoryOptions = {}) {
