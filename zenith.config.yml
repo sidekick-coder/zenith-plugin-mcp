@@ -1,0 +1,8 @@
+id: 01M6E98ECCT5W9N6BXAQPDGRVE
+name: mcp
+description: Add mcp server to zenith
+zenith_version: 0.5.0
+branches:
+    - label: Release
+      branch: release
+      main: true

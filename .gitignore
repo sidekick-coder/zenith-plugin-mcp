@@ -1,0 +1,7 @@
+.env
+node_modules/
+data/*
+!data/.gitkeep
+dist
+tmp
+*.tgz

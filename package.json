@@ -1,0 +1,44 @@
+{
+    "name": "@sidekick-coder/zenith-plugin-mcp",
+    "version": "0.0.1",
+    "scripts": {
+        "start": "NODE_ENV=production zenith serve",
+        "dev": "zenith serve -w",
+        "build": "npm-run-all build:server build:client-node build:client-browser",
+        "build:server": "tsdown",
+        "build:server-expose": "tsdown --config tsdown.config.expose.ts",
+        "build:client-node": "vite build --config vite.config.node.ts",
+        "build:client-browser": "vite build --config vite.config.browser.ts"
+    },
+    "imports": {
+        "#client/*": "./src/client/*",
+        "#server/*": "./src/server/*",
+        "#shared/*": "./src/shared/*"
+    },
+    "exports": {
+        "./server": {
+            "types": "./dist/server-expose/expose.d.mts",
+            "import": "./dist/server-expose/expose.mjs",
+            "require": "./dist/server-expose/expose.js"
+        }
+    },
+    "files": [
+        "dist/server-expose/**/*"
+    ],
+    "dependencies": {
+        "@modelcontextprotocol/express": "^2.0.2",
+        "@modelcontextprotocol/node": "^2.1.2",
+        "@modelcontextprotocol/server": "^2.4.0",
+        "@sidekick-coder/zenith-kit": "^0.4.15",
+        "@valibot/to-json-schema": "^1.8.0",
+        "@vue/tsconfig": "^0.9.1",
+        "kysely": "^0.28.17",
+        "lodash-es": "^4.18.1",
+        "npm-run-all": "^4.1.5"
+    },
+    "devDependencies": {
+        "@types/lodash-es": "^4.17.12",
+        "tsdown": "^0.23.4",
+        "vite": "^7.3.7"
+    }
+}
