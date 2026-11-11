@@ -5,11 +5,13 @@ export default defineConfig({
         'src/server/index.ts',
         'src/server/api/**/*.ts',
         'src/server/migrations/**/*.ts',
+        'src/server/mcp/**/*.ts',
         'src/server/seeders/**/*.ts',
     ],
     outDir: 'dist/server',
     tsconfig: 'tsconfig.server.json',
     minify: true,
     unbundle: true,
+    dts: false
 })
 
