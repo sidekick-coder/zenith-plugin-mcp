@@ -1,11 +1,11 @@
-import { emmitter, container, lifecycle, config, logger } from '@sidekick-coder/zenith-kit/server'
+import { emmitter, container, config, logger } from '@sidekick-coder/zenith-kit/server'
 import { definePlugin } from '@sidekick-coder/zenith-kit/shared'
 import MCPService from './services/MCPService.ts';
 import path from 'path'
 
 const mcp = new MCPService()
 
-async function load() {
+async function register() {
     mcp
         .setDebug(config.getOne(['mcp.debug', 'app.debug'], false))
         .setLogger(logger.child({ label: 'mcp' }))
@@ -13,7 +13,9 @@ async function load() {
     container.set(MCPService, mcp)
 
     await emmitter.emitAndWait('mcp:registered', { mcp })
+}
 
+async function load() {
     await mcp.load()
 }
 
@@ -25,5 +27,7 @@ export default definePlugin(async () => {
     emmitter.on('mcp:registered', tools)
 
     emmitter.on('http:registered', load)
+
+    emmitter.on('plugins:loaded', register)
 })
 
