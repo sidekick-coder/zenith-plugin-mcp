@@ -41,14 +41,17 @@ export default class ToolService {
     public async addDirectory(directory: string, options: AddDirectoryOptions = {}) {
         const prefix = options.prefix || ''
         const pattern = path.join(directory, '**/*.(ts|js|mjs|mts)')
-        const files = await importGlob(pattern, {  })
+        const files = await importGlob(pattern)
 
         for (const [filename, file] of Object.entries(files)) {
             const mod = file.default || file
+
             const relative = path.relative(directory, filename)
+
             let name = relative
                 .replace(/\.(ts|js|mjs|mts)$/, '')
-                .replace(path.sep, '.')
+                .replaceAll(path.sep, '.')
+
 
             if (prefix) {
                 name = `${prefix}.${name}`
